@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700;800&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="css/app.css?v=5">
+    <link rel="stylesheet" href="css/app.css?v=6">
 </head>
 <body>
 <div class="container">
@@ -214,6 +214,17 @@
                     Уровень <b id="tvRemoteLevelNum">1</b> | Блайнды: <b id="tvRemoteBlinds">100 / 200 (200)</b>
                 </div>
 
+                <div class="tv-blinds-control-card">
+                    <div class="tv-blinds-header">
+                        <span class="tv-blinds-title">Размер большого блайнда (BB)</span>
+                        <span class="tv-blinds-preview" id="tvBlindsCalcPreview">МБ: 100 / ББ: 200 (200)</span>
+                    </div>
+                    <div class="tv-blinds-input-row">
+                        <input type="number" id="tvInputBigBlind" class="tv-blinds-input" placeholder="Введите BB, напр. 400" min="10" step="10">
+                        <button type="button" class="btn-tv-apply-blinds" id="btnTvApplyBlinds">Вывести на ТВ</button>
+                    </div>
+                </div>
+
                 <button id="tvRemoteBtnPlay" class="tv-remote-btn-main">
                     Запустить таймер на ТВ
                 </button>
@@ -414,10 +425,59 @@
     </div>
 </div>
 
+<div id="termsAgreementModal" class="modal-overlay">
+    <div class="modal-sheet terms-modal-sheet">
+        <div class="modal-head">
+            <h2 class="modal-title">Регистрация в клубе</h2>
+        </div>
+
+        <div class="terms-hero-badge">
+            <div class="terms-club-logo">
+                <img src="images/logo.png" alt="SOVA">
+            </div>
+            <div>
+                <div class="terms-club-title">SOVA POKER CLUB</div>
+                <div class="terms-club-sub">Клубные правила и согласие участника</div>
+            </div>
+        </div>
+
+        <div class="terms-scroll-body">
+            <div class="terms-section">
+                <h4>1. Общие положения</h4>
+                <p>Клуб объединяет любителей спортивного покера для проведения закрытых клубных турниров, турнирных серий и сезонных зачетов.</p>
+            </div>
+            <div class="terms-section">
+                <h4>2. Правила участия и регламент</h4>
+                <p>Все турниры проводятся в строгом соответствии с международным регламентом TDA (Tournament Directors Association). Решения турнирного директора (TD) за столом являются окончательными.</p>
+            </div>
+            <div class="terms-section">
+                <h4>3. Этикет и атмосфера</h4>
+                <p>В клубе поддерживается уважительное отношение между игроками и персоналом. Запрещены оскорбления, неспортивное поведение и намеренная затяжка времени.</p>
+            </div>
+            <div class="terms-section">
+                <h4>4. Обработка данных</h4>
+                <p>Ваш Telegram ID и имя используются исключительно для учета турнирных очков, формирования рейтингов сезона и оповещений о бронировании мест за столом.</p>
+            </div>
+        </div>
+
+        <div class="terms-checkbox-wrap">
+            <label class="terms-checkbox-label" for="agreeTermsCheckbox">
+                <input type="checkbox" id="agreeTermsCheckbox" class="terms-checkbox-input">
+                <span class="terms-checkbox-custom"></span>
+                <span class="terms-checkbox-text">Я ознакомился с правилами клуба и подтверждаю свое участие</span>
+            </label>
+        </div>
+
+        <button type="button" class="btn-submit modal-submit-gold" id="btnConfirmRegistration" disabled>
+            Завершить регистрацию
+        </button>
+    </div>
+</div>
+
 <div id="toast" class="toast">
     <span id="toastMsg">Уведомление</span>
 </div>
 
-<script src="js/app.js?v=4"></script>
+<script src="js/app.js?v=6"></script>
 </body>
 </html>

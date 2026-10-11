@@ -37,9 +37,30 @@ public class TournamentController {
 
     @GetMapping("/user/me")
     public UserProfileDto me(@RequestHeader("X-Init-Data") String initData) {
-        User user = requireUser(initData);
+        var tgUser = validator.extractTelegramUser(initData);
+        User user = userService.findByTgId(tgUser.id())
+                .orElseGet(() -> userService.registerOrUpdate(
+                        tgUser.id(),
+                        tgUser.username(),
+                        tgUser.firstName(),
+                        tgUser.lastName()
+                ));
         boolean isAdmin = userService.isAdmin(user.getTgId());
-        return new UserProfileDto(user.getTgId(), user.getUsername(), user.getFirstName(), isAdmin);
+        return new UserProfileDto(user.getTgId(), user.getUsername(), user.getFirstName(), isAdmin, user.isTermsAgreed());
+    }
+
+    @PostMapping("/user/register")
+    public UserProfileDto registerInApp(@RequestHeader("X-Init-Data") String initData) {
+        var tgUser = validator.extractTelegramUser(initData);
+        User user = userService.registerOrUpdate(
+                tgUser.id(),
+                tgUser.username(),
+                tgUser.firstName(),
+                tgUser.lastName()
+        );
+        user = userService.agreeTerms(user.getTgId());
+        boolean isAdmin = userService.isAdmin(user.getTgId());
+        return new UserProfileDto(user.getTgId(), user.getUsername(), user.getFirstName(), isAdmin, user.isTermsAgreed());
     }
 
     @GetMapping("/tournaments")
@@ -328,6 +349,8 @@ public class TournamentController {
                 return tvService.toggleBreak(request.secondsLeft() != null ? request.secondsLeft() : 15 * 60);
             case "ADJUST_TIME":
                 return tvService.adjustTime(request.deltaSeconds() != null ? request.deltaSeconds() : 60);
+            case "SET_BLINDS":
+                return tvService.setBlinds(request.bigBlind(), request.smallBlind(), request.ante());
             case "SYNC":
                 return tvService.syncCustom(request.level(), request.secondsLeft(), request.isBreak(), null);
             default:
@@ -352,10 +375,14 @@ public class TournamentController {
     }
 
     private User requireUser(String initData) {
-        Long tgId = validator.extractTgId(initData);
-        return userService.findByTgId(tgId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.UNAUTHORIZED, "Сначала напиши /register в боте"));
+        var tgUser = validator.extractTelegramUser(initData);
+        return userService.findByTgId(tgUser.id())
+                .orElseGet(() -> userService.registerOrUpdate(
+                        tgUser.id(),
+                        tgUser.username(),
+                        tgUser.firstName(),
+                        tgUser.lastName()
+                ));
     }
 
     private User requireAdmin(String initData) {

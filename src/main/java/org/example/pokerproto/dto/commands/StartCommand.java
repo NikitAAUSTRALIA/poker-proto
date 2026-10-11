@@ -27,22 +27,23 @@ public class StartCommand implements Command {
 
     @Override
     public BotApiMethod<?> handle(Message message) {
+        String firstName = message.getFrom() != null && message.getFrom().getFirstName() != null
+                ? message.getFrom().getFirstName()
+                : "Гость";
+
+        String text = "Добро пожаловать в SOVA POKER CLUB, " + firstName + "!\n\n"
+                + "Здесь вы можете следить за расписанием живых турниров, записываться на игры в один клик и отслеживать свой рейтинг в сезоне.\n\n"
+                + "Нажмите кнопку ниже, чтобы открыть клубное приложение:";
+
         SendMessage.SendMessageBuilder builder = SendMessage.builder()
                 .chatId(message.getChatId().toString())
-                .text("Здравствуйте! Добро пожаловать в покерный клуб.\n\n"
-                        + "Доступные команды:\n"
-                        + "/app — открыть покерное приложение\n"
-                        + "/register — зарегистрироваться в боте\n"
-                        + "/tournaments — список турниров\n"
-                        + "/tournament_reg <id> — записаться на турнир\n"
-                        + "/tournament_unreg <id> — отписаться от турнира\n"
-                        + "/leaderboard — рейтинг игроков сезона");
+                .text(text);
 
         if (webAppUrl != null && !webAppUrl.isBlank()) {
             builder.replyMarkup(InlineKeyboardMarkup.builder()
                     .keyboardRow(List.of(
                             InlineKeyboardButton.builder()
-                                    .text("Открыть приложение")
+                                    .text("♠️ Войти в SOVA CLUB")
                                     .webApp(new WebAppInfo(webAppUrl))
                                     .build()
                     ))

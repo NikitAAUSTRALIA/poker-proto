@@ -152,6 +152,8 @@ const tg = window.Telegram?.WebApp;
         allTournaments = sortTournaments(mockTournaments);
     }
 
+    let termsAgreed = true;
+
     async function loadUserProfile() {
         if (!initData) return;
         try {
@@ -161,13 +163,73 @@ const tg = window.Telegram?.WebApp;
             if (res.ok) {
                 const profile = await res.json();
                 myTgId = profile.tgId;
+                termsAgreed = !!profile.termsAgreed;
                 if (profile.firstName || profile.username) {
                     document.getElementById('userName').textContent = profile.firstName || profile.username;
                 }
                 updateAdminUI(profile.isAdmin);
+
+                if (!termsAgreed) {
+                    openTermsModal();
+                }
             }
         } catch (e) {
             console.error('Failed to load profile', e);
+        }
+    }
+
+    function openTermsModal() {
+        const modal = document.getElementById('termsAgreementModal');
+        if (modal) {
+            modal.classList.add('open');
+            modal.classList.add('active');
+        }
+    }
+
+    function closeTermsModal() {
+        const modal = document.getElementById('termsAgreementModal');
+        if (modal) {
+            modal.classList.remove('open');
+            modal.classList.remove('active');
+        }
+    }
+
+    async function handleConfirmRegistration() {
+        const checkbox = document.getElementById('agreeTermsCheckbox');
+        if (!checkbox || !checkbox.checked) {
+            showToast('Пожалуйста, подтвердите согласие с правилами', 'warning');
+            return;
+        }
+
+        triggerHaptic('medium');
+        const btn = document.getElementById('btnConfirmRegistration');
+        if (btn) btn.disabled = true;
+
+        if (!initData) {
+            termsAgreed = true;
+            closeTermsModal();
+            showToast('Регистрация успешно пройдена (демо)!', 'success');
+            return;
+        }
+
+        try {
+            const res = await fetch('/api/user/register', {
+                method: 'POST',
+                headers: { 'X-Init-Data': initData }
+            });
+            if (res.ok) {
+                const profile = await res.json();
+                termsAgreed = true;
+                closeTermsModal();
+                showToast('Добро пожаловать в клуб!', 'success');
+                loadTournaments();
+            } else {
+                showToast('Ошибка регистрации. Попробуйте еще раз', 'error');
+                if (btn) btn.disabled = false;
+            }
+        } catch (e) {
+            showToast('Ошибка соединения', 'error');
+            if (btn) btn.disabled = false;
         }
     }
 
@@ -959,7 +1021,10 @@ const tg = window.Telegram?.WebApp;
                         currentLevel: s.currentLevel || 1,
                         secondsLeft: s.secondsLeft !== undefined ? s.secondsLeft : 15 * 60,
                         break: isBreak,
-                        isBreak: isBreak
+                        isBreak: isBreak,
+                        smallBlind: s.smallBlind,
+                        bigBlind: s.bigBlind,
+                        ante: s.ante
                     };
                     updateTvRemoteUI();
                     populateTvTournamentSelect();
@@ -967,6 +1032,33 @@ const tg = window.Telegram?.WebApp;
                 }
             }
         } catch (e) {}
+    }
+
+    function updateBlindsCalcPreview(bbVal) {
+        const preview = document.getElementById('tvBlindsCalcPreview');
+        if (!preview) return;
+        const bb = parseInt(bbVal, 10);
+        if (bb && bb > 0) {
+            const sb = Math.max(1, Math.floor(bb / 2));
+            const ante = bb;
+            preview.textContent = `МБ: ${sb.toLocaleString('ru-RU')} / ББ: ${bb.toLocaleString('ru-RU')} (${ante.toLocaleString('ru-RU')})`;
+        } else {
+            preview.textContent = 'МБ: — / ББ: —';
+        }
+    }
+
+    async function handleApplyBlinds() {
+        const input = document.getElementById('tvInputBigBlind');
+        if (!input) return;
+        const bb = parseInt(input.value, 10);
+        if (!bb || bb <= 0) {
+            showToast('Введите размер большого блайнда (BB)', 'warning');
+            return;
+        }
+        const sb = Math.max(1, Math.floor(bb / 2));
+        const ante = bb;
+        await sendTvAction('SET_BLINDS', { bigBlind: bb, smallBlind: sb, ante: ante });
+        showToast(`Блайнды ${sb.toLocaleString('ru-RU')} / ${bb.toLocaleString('ru-RU')} выведены на ТВ`, 'success');
     }
 
     function updateTvRemoteUI() {
@@ -1001,9 +1093,16 @@ const tg = window.Telegram?.WebApp;
         if (!isBreak) {
             const lvl = tvState.currentLevel || 1;
             if (levelNum) levelNum.textContent = lvl;
-            const b = BLINDS_TABLE[lvl - 1] || BLINDS_TABLE[0];
+            const sb = (tvState.smallBlind !== undefined && tvState.smallBlind !== null) ? tvState.smallBlind : 100;
+            const bb = (tvState.bigBlind !== undefined && tvState.bigBlind !== null) ? tvState.bigBlind : 200;
+            const ante = (tvState.ante !== undefined && tvState.ante !== null) ? tvState.ante : 200;
             if (blindsText) {
-                blindsText.textContent = `${b.sb.toLocaleString('ru-RU')} / ${b.bb.toLocaleString('ru-RU')} (${b.ante.toLocaleString('ru-RU')})`;
+                blindsText.textContent = `${sb.toLocaleString('ru-RU')} / ${bb.toLocaleString('ru-RU')} (${ante.toLocaleString('ru-RU')})`;
+            }
+            const inputBb = document.getElementById('tvInputBigBlind');
+            if (inputBb && document.activeElement !== inputBb && !inputBb.value) {
+                inputBb.value = bb;
+                updateBlindsCalcPreview(bb);
             }
         }
 
@@ -1048,6 +1147,10 @@ const tg = window.Telegram?.WebApp;
                 tvState.secondsLeft = Math.max(0, tvState.secondsLeft + delta);
             } else if (action === 'SYNC') {
                 tvState.secondsLeft = extra.secondsLeft !== undefined ? extra.secondsLeft : 15 * 60;
+            } else if (action === 'SET_BLINDS') {
+                tvState.bigBlind = extra.bigBlind;
+                tvState.smallBlind = extra.smallBlind;
+                tvState.ante = extra.ante;
             } else if (action === 'SET_TOURNAMENT') {
                 tvState.tournamentId = extra.tournamentId;
                 const found = allTournaments.find(x => x.id == extra.tournamentId);
@@ -1082,7 +1185,10 @@ const tg = window.Telegram?.WebApp;
                     currentLevel: s.currentLevel || 1,
                     secondsLeft: s.secondsLeft !== undefined ? s.secondsLeft : 15 * 60,
                     break: isBreak,
-                    isBreak: isBreak
+                    isBreak: isBreak,
+                    smallBlind: s.smallBlind,
+                    bigBlind: s.bigBlind,
+                    ante: s.ante
                 };
                 updateTvRemoteUI();
                 renderAdminTournaments();
@@ -1473,9 +1579,9 @@ const tg = window.Telegram?.WebApp;
         const list = document.getElementById('list');
         list.innerHTML = `
             <div class="empty-box">
-                <div class="empty-title">Авторизация</div>
-                <div class="empty-desc">Отправьте команду <b>/register</b> в чат бота для доступа.</div>
-                <button class="empty-btn" onclick="tg?.close ? tg.close() : handleRefresh()">Перейти в бот</button>
+                <div class="empty-title">Регистрация в клубе</div>
+                <div class="empty-desc">Для записи на турниры и просмотра рейтинга необходимо подтвердить участие в клубе.</div>
+                <button class="empty-btn" onclick="openTermsModal()">Зарегистрироваться</button>
             </div>
         `;
     }
@@ -1528,6 +1634,17 @@ const tg = window.Telegram?.WebApp;
         bind('btnOpenTvTab', 'click', openTvTab);
         bind('btnCopyTvLink', 'click', copyTvLink);
         bind('tvRemoteBtnPlay', 'click', tvRemoteTogglePlay);
+        bind('btnTvApplyBlinds', 'click', handleApplyBlinds);
+        const bbInput = document.getElementById('tvInputBigBlind');
+        if (bbInput) {
+            bbInput.addEventListener('input', () => updateBlindsCalcPreview(bbInput.value));
+            bbInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleApplyBlinds();
+                }
+            });
+        }
         bind('btnTvRemotePrev', 'click', () => tvRemoteAction('PREV_LEVEL'));
         bind('btnTvRemoteNext', 'click', () => tvRemoteAction('NEXT_LEVEL'));
         bind('btnTvRemoteBreak', 'click', () => tvRemoteAction('TOGGLE_BREAK'));
@@ -1549,6 +1666,15 @@ const tg = window.Telegram?.WebApp;
         bind('btnDownloadTourneyExcelTemplate', 'click', () => downloadTournamentExcel(selectedResultsTourneyId));
         bind('btnResultsFromUrl', 'click', submitResultsFromUrl);
         bind('btnResultsUploadFile', 'click', submitResultsFile);
+
+        const termsCb = document.getElementById('agreeTermsCheckbox');
+        if (termsCb) {
+            termsCb.addEventListener('change', () => {
+                const btn = document.getElementById('btnConfirmRegistration');
+                if (btn) btn.disabled = !termsCb.checked;
+            });
+        }
+        bind('btnConfirmRegistration', 'click', handleConfirmRegistration);
     }
 
     initEventListeners();

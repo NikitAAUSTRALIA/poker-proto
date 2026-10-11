@@ -51,6 +51,20 @@ public class UserService {
         return repo.save(user);
     }
 
+    @Transactional
+    public User agreeTerms(Long tgId) {
+        User user = repo.findByTgId(tgId).orElseGet(User::new);
+        user.setTgId(tgId);
+        user.setTermsAgreed(true);
+        user.setTermsAgreedAt(java.time.Instant.now());
+        if (adminIds.contains(tgId)) {
+            user.setRole(Role.ADMIN);
+        } else if (user.getRole() == null) {
+            user.setRole(Role.USER);
+        }
+        return repo.save(user);
+    }
+
     public Optional<User> findByTgId(Long tgId) {
         return repo.findByTgId(tgId);
     }

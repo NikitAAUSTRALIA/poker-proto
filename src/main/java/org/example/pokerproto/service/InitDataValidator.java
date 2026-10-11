@@ -49,6 +49,36 @@ public class InitDataValidator {
         }
     }
 
+    public record TelegramUserData(Long id, String username, String firstName, String lastName) {}
+
+    public TelegramUserData extractTelegramUser(String initData) {
+        Map<String, String> params = parse(initData);
+        String hash = params.remove("hash");
+        if (hash == null || !validate(params, hash)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Bad initData");
+        }
+
+        String userJson = params.get("user");
+        if (userJson == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No user in initData");
+        }
+
+        try {
+            Map<?, ?> user = mapper.readValue(userJson, Map.class);
+            Object idObj = user.get("id");
+            if (idObj == null) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No id in user");
+            }
+            Long id = Long.valueOf(idObj.toString());
+            String username = user.get("username") != null ? user.get("username").toString() : null;
+            String firstName = user.get("first_name") != null ? user.get("first_name").toString() : null;
+            String lastName = user.get("last_name") != null ? user.get("last_name").toString() : null;
+            return new TelegramUserData(id, username, firstName, lastName);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Bad user json");
+        }
+    }
+
     private boolean validate(Map<String, String> params, String hash) {
         try {
             String dataCheckString = params.entrySet().stream()

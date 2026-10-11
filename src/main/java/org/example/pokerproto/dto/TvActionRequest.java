@@ -6,5 +6,8 @@ public record TvActionRequest(
         Integer deltaSeconds,
         Integer level,
         Integer secondsLeft,
-        Boolean isBreak
+        Boolean isBreak,
+        Integer bigBlind,
+        Integer smallBlind,
+        Integer ante
 ) {}

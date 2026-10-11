@@ -24,6 +24,9 @@ public class TvService {
         private int totalSeconds = 15 * 60;
         private boolean isBreak = false;
         private long lastSyncTimestamp = System.currentTimeMillis();
+        private Integer smallBlind = 100;
+        private Integer bigBlind = 200;
+        private Integer ante = 200;
     }
 
     private final TvState currentState = new TvState();
@@ -124,6 +127,16 @@ public class TvService {
         return copyState();
     }
 
+    public synchronized TvState setBlinds(Integer bigBlind, Integer smallBlind, Integer ante) {
+        if (bigBlind != null && bigBlind > 0) {
+            currentState.setBigBlind(bigBlind);
+            currentState.setSmallBlind(smallBlind != null && smallBlind > 0 ? smallBlind : Math.max(1, bigBlind / 2));
+            currentState.setAnte(ante != null && ante >= 0 ? ante : bigBlind);
+            currentState.setLastSyncTimestamp(System.currentTimeMillis());
+        }
+        return copyState();
+    }
+
     private TvState copyState() {
         TvState copy = new TvState();
         copy.setTournamentId(currentState.getTournamentId());
@@ -135,6 +148,9 @@ public class TvService {
         copy.setTotalSeconds(currentState.getTotalSeconds());
         copy.setBreak(currentState.isBreak());
         copy.setLastSyncTimestamp(currentState.getLastSyncTimestamp());
+        copy.setSmallBlind(currentState.getSmallBlind());
+        copy.setBigBlind(currentState.getBigBlind());
+        copy.setAnte(currentState.getAnte());
         return copy;
     }
 }

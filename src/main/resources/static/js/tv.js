@@ -139,10 +139,13 @@
                 } else {
                     statusText.textContent = "РАЗЫГРОВКА";
                 }
+                const sbVal = (state.customSmallBlind !== undefined && state.customSmallBlind !== null) ? state.customSmallBlind : current.sb;
+                const bbVal = (state.customBigBlind !== undefined && state.customBigBlind !== null) ? state.customBigBlind : current.bb;
+                const anteVal = (state.customAnte !== undefined && state.customAnte !== null) ? state.customAnte : current.ante;
                 document.getElementById("currentLevelDisplay").textContent = current.level;
-                document.getElementById("valSmallBlind").textContent = formatChips(current.sb);
-                document.getElementById("valBigBlind").textContent = formatChips(current.bb);
-                document.getElementById("valAnte").textContent = formatChips(current.ante);
+                document.getElementById("valSmallBlind").textContent = formatChips(sbVal);
+                document.getElementById("valBigBlind").textContent = formatChips(bbVal);
+                document.getElementById("valAnte").textContent = formatChips(anteVal);
             }
 
             if (next) {
@@ -890,6 +893,15 @@
                     if (server.secondsLeft !== undefined && Math.abs(server.secondsLeft - state.secondsLeft) > 2) {
                         state.secondsLeft = server.secondsLeft;
                         updateClockDisplay();
+                    }
+
+                    if (server.bigBlind !== undefined && server.bigBlind !== null) {
+                        if (state.customBigBlind !== server.bigBlind || state.customSmallBlind !== server.smallBlind || state.customAnte !== server.ante) {
+                            state.customBigBlind = server.bigBlind;
+                            state.customSmallBlind = server.smallBlind;
+                            state.customAnte = server.ante;
+                            updateClockDisplay();
+                        }
                     }
                 } catch (e) {}
             }

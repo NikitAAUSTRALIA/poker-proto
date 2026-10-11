@@ -31,6 +31,12 @@ public class User {
     @Column(nullable = false)
     private Role role = Role.USER;
 
+    @Column(name = "terms_agreed", nullable = false, columnDefinition = "boolean default false")
+    private boolean termsAgreed = false;
+
+    @Column(name = "terms_agreed_at")
+    private Instant termsAgreedAt;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
 }

@@ -4,5 +4,6 @@ public record UserProfileDto(
         Long tgId,
         String username,
         String firstName,
-        boolean isAdmin
+        boolean isAdmin,
+        boolean termsAgreed
 ) {}

@@ -706,6 +706,88 @@
             font-family: var(--font-mono);
         }
 
+        .tv-blinds-control-card {
+            background: rgba(223, 177, 91, 0.05);
+            border: 1px solid var(--border-gold);
+            border-radius: 12px;
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            text-align: left;
+        }
+
+        .tv-blinds-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tv-blinds-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .tv-blinds-preview {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--gold-light);
+        }
+
+        .tv-blinds-input-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tv-blinds-input {
+            flex: 1;
+            min-width: 0;
+            background: rgba(0, 0, 0, 0.55);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            padding: 8px 12px;
+            color: #ffffff;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            font-weight: 700;
+            outline: none;
+            transition: border-color var(--transition-fast);
+        }
+
+        .tv-blinds-input:focus {
+            border-color: var(--gold-light);
+            box-shadow: 0 0 10px rgba(223, 177, 91, 0.25);
+        }
+
+        .btn-tv-apply-blinds {
+            background: var(--gold-gradient);
+            color: #110d06;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 14px;
+            font-family: var(--font-heading);
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            flex-shrink: 0;
+            white-space: nowrap;
+            transition: opacity var(--transition-fast), transform var(--transition-fast);
+        }
+
+        .btn-tv-apply-blinds:active {
+            transform: scale(0.97);
+            opacity: 0.9;
+        }
+
         .tv-remote-btn-main {
             background: var(--gold-gradient);
             color: #110d06;
@@ -1667,3 +1749,144 @@
 .skeleton-w25 { width: 25%; }
 .skeleton-h20-w75 { width: 75%; height: 20px; }
 .skeleton-btn { width: 100%; height: 42px; margin-top: 14px; border-radius: 10px; }
+
+.terms-modal-sheet {
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.terms-hero-badge {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: rgba(223, 177, 91, 0.08);
+    border: 1px solid var(--border-gold);
+    border-radius: 14px;
+    margin-bottom: 14px;
+}
+
+.terms-club-logo {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    border-radius: 12px;
+    background: #000;
+    border: 1px solid var(--border-gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.terms-club-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.terms-club-title {
+    font-family: var(--font-heading);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--gold-light);
+    letter-spacing: 0.04em;
+}
+
+.terms-club-sub {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+.terms-scroll-body {
+    max-height: 240px;
+    overflow-y: auto;
+    padding: 12px 14px;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.terms-section h4 {
+    font-family: var(--font-heading);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gold-main);
+    margin-bottom: 4px;
+}
+
+.terms-section p {
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.terms-checkbox-wrap {
+    margin-bottom: 14px;
+}
+
+.terms-checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.terms-checkbox-input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.terms-checkbox-custom {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+    border-radius: 6px;
+    border: 1px solid var(--border-gold);
+    background: rgba(255, 255, 255, 0.05);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    margin-top: 1px;
+}
+
+.terms-checkbox-input:checked + .terms-checkbox-custom {
+    background: var(--gold-gradient);
+    border-color: var(--gold-main);
+}
+
+.terms-checkbox-input:checked + .terms-checkbox-custom::after {
+    content: "✓";
+    font-size: 13px;
+    font-weight: 800;
+    color: #110d06;
+}
+
+.terms-checkbox-text {
+    font-size: 11px;
+    line-height: 1.45;
+    color: var(--text-primary);
+}
+
+#btnConfirmRegistration:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
