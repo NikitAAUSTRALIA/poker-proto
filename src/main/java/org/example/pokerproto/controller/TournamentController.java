@@ -342,9 +342,9 @@ public class TournamentController {
             case "PAUSE":
                 return tvService.pauseTimer();
             case "NEXT_LEVEL":
-                return tvService.nextLevel(request.secondsLeft() != null ? request.secondsLeft() : 15 * 60);
+                return tvService.nextLevel(request.secondsLeft() != null ? request.secondsLeft() : 20 * 60);
             case "PREV_LEVEL":
-                return tvService.prevLevel(request.secondsLeft() != null ? request.secondsLeft() : 15 * 60);
+                return tvService.prevLevel(request.secondsLeft() != null ? request.secondsLeft() : 20 * 60);
             case "TOGGLE_BREAK":
                 return tvService.toggleBreak(request.secondsLeft() != null ? request.secondsLeft() : 15 * 60);
             case "ADJUST_TIME":

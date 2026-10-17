@@ -20,8 +20,8 @@ public class TvService {
         private String excelUrl = "";
         private boolean isRunning = false;
         private int currentLevel = 1;
-        private int secondsLeft = 15 * 60;
-        private int totalSeconds = 15 * 60;
+        private int secondsLeft = 20 * 60;
+        private int totalSeconds = 20 * 60;
         private boolean isBreak = false;
         private long lastSyncTimestamp = System.currentTimeMillis();
         private Integer smallBlind = 100;
@@ -78,8 +78,9 @@ public class TvService {
 
     public synchronized TvState nextLevel(int seconds) {
         currentState.setCurrentLevel(currentState.getCurrentLevel() + 1);
-        currentState.setSecondsLeft(seconds > 0 ? seconds : 15 * 60);
-        currentState.setTotalSeconds(seconds > 0 ? seconds : 15 * 60);
+        int s = seconds > 0 ? seconds : 20 * 60;
+        currentState.setSecondsLeft(s);
+        currentState.setTotalSeconds(s);
         currentState.setBreak(false);
         currentState.setLastSyncTimestamp(System.currentTimeMillis());
         return copyState();
@@ -89,8 +90,9 @@ public class TvService {
         if (currentState.getCurrentLevel() > 1) {
             currentState.setCurrentLevel(currentState.getCurrentLevel() - 1);
         }
-        currentState.setSecondsLeft(seconds > 0 ? seconds : 15 * 60);
-        currentState.setTotalSeconds(seconds > 0 ? seconds : 15 * 60);
+        int s = seconds > 0 ? seconds : 20 * 60;
+        currentState.setSecondsLeft(s);
+        currentState.setTotalSeconds(s);
         currentState.setBreak(false);
         currentState.setLastSyncTimestamp(System.currentTimeMillis());
         return copyState();
@@ -103,6 +105,10 @@ public class TvService {
             int breakSecs = seconds > 0 ? seconds : 15 * 60;
             currentState.setSecondsLeft(breakSecs);
             currentState.setTotalSeconds(breakSecs);
+        } else {
+            int lvlSecs = seconds > 0 ? seconds : 20 * 60;
+            currentState.setSecondsLeft(lvlSecs);
+            currentState.setTotalSeconds(lvlSecs);
         }
         currentState.setLastSyncTimestamp(System.currentTimeMillis());
         return copyState();
