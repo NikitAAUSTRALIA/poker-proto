@@ -1117,7 +1117,7 @@ const tg = window.Telegram?.WebApp;
                 blindsText.textContent = `${sb.toLocaleString('ru-RU')} / ${bb.toLocaleString('ru-RU')} (${ante.toLocaleString('ru-RU')})`;
             }
             const inputBb = document.getElementById('tvInputBigBlind');
-            if (inputBb && document.activeElement !== inputBb && !inputBb.value) {
+            if (inputBb && document.activeElement !== inputBb) {
                 inputBb.value = bb;
                 updateBlindsCalcPreview(bb);
             }
