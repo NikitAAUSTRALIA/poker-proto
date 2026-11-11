@@ -46,11 +46,14 @@ public class TournamentController {
                         tgUser.lastName()
                 ));
         boolean isAdmin = userService.isAdmin(user.getTgId());
-        return new UserProfileDto(user.getTgId(), user.getUsername(), user.getFirstName(), isAdmin, user.isTermsAgreed());
+        return new UserProfileDto(user.getTgId(), user.getUsername(), user.getFirstName(), isAdmin, user.isTermsAgreed(), user.getNickname());
     }
 
+    public record RegisterRequest(String nickname) {}
+
     @PostMapping("/user/register")
-    public UserProfileDto registerInApp(@RequestHeader("X-Init-Data") String initData) {
+    public UserProfileDto registerInApp(@RequestBody(required = false) RegisterRequest req,
+                                        @RequestHeader("X-Init-Data") String initData) {
         var tgUser = validator.extractTelegramUser(initData);
         User user = userService.registerOrUpdate(
                 tgUser.id(),
@@ -58,9 +61,24 @@ public class TournamentController {
                 tgUser.firstName(),
                 tgUser.lastName()
         );
-        user = userService.agreeTerms(user.getTgId());
+        String nick = req != null ? req.nickname() : null;
+        user = userService.agreeTerms(user.getTgId(), nick);
         boolean isAdmin = userService.isAdmin(user.getTgId());
-        return new UserProfileDto(user.getTgId(), user.getUsername(), user.getFirstName(), isAdmin, user.isTermsAgreed());
+        return new UserProfileDto(user.getTgId(), user.getUsername(), user.getFirstName(), isAdmin, user.isTermsAgreed(), user.getNickname());
+    }
+
+    public record NicknameRequest(String nickname) {}
+
+    @PostMapping("/user/nickname")
+    public UserProfileDto setNickname(@RequestBody NicknameRequest req,
+                                      @RequestHeader("X-Init-Data") String initData) {
+        var tgUser = validator.extractTelegramUser(initData);
+        if (req == null || req.nickname() == null || req.nickname().trim().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Никнейм не может быть пустым");
+        }
+        User user = userService.updateNickname(tgUser.id(), req.nickname().trim());
+        boolean isAdmin = userService.isAdmin(user.getTgId());
+        return new UserProfileDto(user.getTgId(), user.getUsername(), user.getFirstName(), isAdmin, user.isTermsAgreed(), user.getNickname());
     }
 
     @GetMapping("/tournaments")
@@ -299,7 +317,8 @@ public class TournamentController {
                         r.getUser().getFirstName(),
                         r.getUser().getLastName(),
                         r.getStatus().name(),
-                        r.getCreatedAt()
+                        r.getCreatedAt(),
+                        r.getUser().getNickname()
                 ))
                 .toList();
     }
@@ -342,15 +361,22 @@ public class TournamentController {
             case "PAUSE":
                 return tvService.pauseTimer();
             case "NEXT_LEVEL":
-                return tvService.nextLevel(request.secondsLeft() != null ? request.secondsLeft() : 20 * 60);
+                return tvService.nextLevel(request.secondsLeft() != null ? request.secondsLeft() : 0);
             case "PREV_LEVEL":
-                return tvService.prevLevel(request.secondsLeft() != null ? request.secondsLeft() : 20 * 60);
+                return tvService.prevLevel(request.secondsLeft() != null ? request.secondsLeft() : 0);
             case "TOGGLE_BREAK":
-                return tvService.toggleBreak(request.secondsLeft() != null ? request.secondsLeft() : 15 * 60);
+                return tvService.toggleBreak(request.secondsLeft() != null ? request.secondsLeft() : 0);
             case "ADJUST_TIME":
                 return tvService.adjustTime(request.deltaSeconds() != null ? request.deltaSeconds() : 60);
             case "SET_BLINDS":
                 return tvService.setBlinds(request.bigBlind(), request.smallBlind(), request.ante());
+            case "SET_STRUCTURE":
+                if (request.structure() != null) {
+                    return tvService.setCustomStructure(request.structure());
+                }
+                break;
+            case "RESET_STRUCTURE":
+                return tvService.resetCustomStructure();
             case "SYNC":
                 return tvService.syncCustom(request.level(), request.secondsLeft(), request.isBreak(), null);
             default:

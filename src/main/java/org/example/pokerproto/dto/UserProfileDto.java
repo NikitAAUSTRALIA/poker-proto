@@ -5,5 +5,6 @@ public record UserProfileDto(
         String username,
         String firstName,
         boolean isAdmin,
-        boolean termsAgreed
+        boolean termsAgreed,
+        String nickname
 ) {}

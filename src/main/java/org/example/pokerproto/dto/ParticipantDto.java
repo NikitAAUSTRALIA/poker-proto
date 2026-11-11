@@ -8,5 +8,6 @@ public record ParticipantDto(
         String firstName,
         String lastName,
         String status,
-        Instant registeredAt
+        Instant registeredAt,
+        String nickname
 ) {}

@@ -9,5 +9,6 @@ public record LeaderboardEntryDto(
         int points,
         int tournamentsPlayed,
         int wins,
-        int bestPlace
+        int bestPlace,
+        String nickname
 ) {}

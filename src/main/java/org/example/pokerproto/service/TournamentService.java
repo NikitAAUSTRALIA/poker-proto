@@ -160,7 +160,7 @@ public class TournamentService {
             headerStyle.setAlignment(HorizontalAlignment.CENTER);
 
             Sheet sheet1 = workbook.createSheet("Входы");
-            String[] headers1 = {"Игрок", "Telegram ID", "Никнейм", "Статус", "Фишки"};
+            String[] headers1 = {"Никнейм", "Telegram ID", "Юзернейм", "Статус", "Фишки"};
             Row r0 = sheet1.createRow(0);
             for (int i = 0; i < headers1.length; i++) {
                 Cell c = r0.createCell(i);
@@ -172,13 +172,15 @@ public class TournamentService {
             for (Registration reg : participants) {
                 User u = reg.getUser();
                 Row row = sheet1.createRow(rowIdx1++);
-                String fullName = (u.getFirstName() != null ? u.getFirstName() : "") +
-                        (u.getLastName() != null && !u.getLastName().isBlank() ? " " + u.getLastName() : "");
-                if (fullName.isBlank()) {
-                    fullName = u.getUsername() != null ? u.getUsername() : "Игрок #" + u.getTgId();
+                String nick = (u.getNickname() != null && !u.getNickname().isBlank())
+                        ? u.getNickname()
+                        : ((u.getFirstName() != null ? u.getFirstName() : "") +
+                           (u.getLastName() != null && !u.getLastName().isBlank() ? " " + u.getLastName() : ""));
+                if (nick.isBlank()) {
+                    nick = u.getUsername() != null ? u.getUsername() : "Игрок #" + u.getTgId();
                 }
 
-                row.createCell(0).setCellValue(fullName);
+                row.createCell(0).setCellValue(nick);
                 row.createCell(1).setCellValue(u.getTgId());
                 row.createCell(2).setCellValue(u.getUsername() != null ? "@" + u.getUsername() : "");
                 row.createCell(3).setCellValue("Ожидается");
@@ -186,7 +188,7 @@ public class TournamentService {
             }
 
             Sheet sheet2 = workbook.createSheet("Ребаи");
-            String[] headers2 = {"Игрок", "Telegram ID", "Никнейм", "Сумма фишек"};
+            String[] headers2 = {"Никнейм", "Telegram ID", "Юзернейм", "Сумма фишек"};
             Row r1 = sheet2.createRow(0);
             for (int i = 0; i < headers2.length; i++) {
                 Cell c = r1.createCell(i);
@@ -195,7 +197,7 @@ public class TournamentService {
             }
 
             Sheet sheet3 = workbook.createSheet("Лидеры");
-            String[] headers3 = {"Игрок", "Telegram ID", "Никнейм", "Фишки"};
+            String[] headers3 = {"Никнейм", "Telegram ID", "Юзернейм", "Фишки"};
             Row r2 = sheet3.createRow(0);
             for (int i = 0; i < headers3.length; i++) {
                 Cell c = r2.createCell(i);
@@ -206,19 +208,21 @@ public class TournamentService {
             for (Registration reg : participants) {
                 User u = reg.getUser();
                 Row row = sheet3.createRow(rowIdx3++);
-                String fullName = (u.getFirstName() != null ? u.getFirstName() : "") +
-                        (u.getLastName() != null && !u.getLastName().isBlank() ? " " + u.getLastName() : "");
-                if (fullName.isBlank()) {
-                    fullName = u.getUsername() != null ? u.getUsername() : "Игрок #" + u.getTgId();
+                String nick = (u.getNickname() != null && !u.getNickname().isBlank())
+                        ? u.getNickname()
+                        : ((u.getFirstName() != null ? u.getFirstName() : "") +
+                           (u.getLastName() != null && !u.getLastName().isBlank() ? " " + u.getLastName() : ""));
+                if (nick.isBlank()) {
+                    nick = u.getUsername() != null ? u.getUsername() : "Игрок #" + u.getTgId();
                 }
-                row.createCell(0).setCellValue(fullName);
+                row.createCell(0).setCellValue(nick);
                 row.createCell(1).setCellValue(u.getTgId());
                 row.createCell(2).setCellValue(u.getUsername() != null ? "@" + u.getUsername() : "");
                 row.createCell(3).setCellValue(50000);
             }
 
             Sheet sheet4 = workbook.createSheet("Выбывшие");
-            String[] headers4 = {"Игрок", "Telegram ID", "Никнейм", "Время"};
+            String[] headers4 = {"Никнейм", "Telegram ID", "Юзернейм", "Время"};
             Row r3 = sheet4.createRow(0);
             for (int i = 0; i < headers4.length; i++) {
                 Cell c = r3.createCell(i);

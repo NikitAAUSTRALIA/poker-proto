@@ -9,41 +9,43 @@ const tg = window.Telegram?.WebApp;
         excelUrl: '',
         running: false,
         currentLevel: 1,
-        secondsLeft: 20 * 60,
+        secondsLeft: 15 * 60,
         break: false,
         smallBlind: 100,
-        bigBlind: 200,
-        ante: 200
+        bigBlind: 100,
+        ante: 100
     };
 
     const BLINDS_TABLE = [
-        { level: 1,  sb: 100,   bb: 200,    ante: 200,   minutes: 20, isBreak: false },
-        { level: 2,  sb: 200,   bb: 400,    ante: 400,   minutes: 20, isBreak: false },
-        { level: 3,  sb: 300,   bb: 600,    ante: 600,   minutes: 20, isBreak: false },
-        { level: 4,  sb: 400,   bb: 800,    ante: 800,   minutes: 20, isBreak: false },
-        { level: 5,  sb: 500,   bb: 1000,   ante: 1000,  minutes: 20, isBreak: false },
-        { level: 6,  sb: 0,     bb: 0,      ante: 0,     minutes: 15, isBreak: true  },
-        { level: 7,  sb: 600,   bb: 1200,   ante: 1200,  minutes: 20, isBreak: false },
-        { level: 8,  sb: 800,   bb: 1600,   ante: 1600,  minutes: 20, isBreak: false },
-        { level: 9,  sb: 1000,  bb: 2000,   ante: 2000,  minutes: 20, isBreak: false },
-        { level: 10, sb: 1200,  bb: 2400,   ante: 2400,  minutes: 20, isBreak: false },
-        { level: 11, sb: 1500,  bb: 3000,   ante: 3000,  minutes: 20, isBreak: false },
-        { level: 12, sb: 0,     bb: 0,      ante: 0,     minutes: 15, isBreak: true  },
-        { level: 13, sb: 2000,  bb: 4000,   ante: 4000,  minutes: 20, isBreak: false },
-        { level: 14, sb: 2500,  bb: 5000,   ante: 5000,  minutes: 20, isBreak: false },
-        { level: 15, sb: 3000,  bb: 6000,   ante: 6000,  minutes: 20, isBreak: false },
-        { level: 16, sb: 4000,  bb: 8000,   ante: 8000,  minutes: 20, isBreak: false },
-        { level: 17, sb: 5000,  bb: 10000,  ante: 10000, minutes: 20, isBreak: false },
-        { level: 18, sb: 0,     bb: 0,      ante: 0,     minutes: 15, isBreak: true  },
-        { level: 19, sb: 6000,  bb: 12000,  ante: 12000, minutes: 20, isBreak: false },
-        { level: 20, sb: 8000,  bb: 16000,  ante: 16000, minutes: 20, isBreak: false },
-        { level: 21, sb: 10000, bb: 20000,  ante: 20000, minutes: 20, isBreak: false },
-        { level: 22, sb: 15000, bb: 30000,  ante: 30000, minutes: 20, isBreak: false },
-        { level: 23, sb: 20000, bb: 40000,  ante: 40000, minutes: 20, isBreak: false },
-        { level: 24, sb: 25000, bb: 50000,  ante: 50000, minutes: 20, isBreak: false },
-        { level: 25, sb: 30000, bb: 60000,  ante: 60000, minutes: 20, isBreak: false },
-        { level: 26, sb: 40000, bb: 80000,  ante: 80000, minutes: 20, isBreak: false },
-        { level: 27, sb: 50000, bb: 100000, ante: 100000,minutes: 20, isBreak: false }
+        { level: 1,  sb: 100,   bb: 100,    ante: 100,   minutes: 15, isBreak: false },
+        { level: 2,  sb: 100,   bb: 200,    ante: 200,   minutes: 15, isBreak: false },
+        { level: 3,  sb: 150,   bb: 300,    ante: 300,   minutes: 15, isBreak: false },
+        { level: 4,  sb: 200,   bb: 400,    ante: 400,   minutes: 15, isBreak: false },
+        { level: 5,  sb: 0,     bb: 0,      ante: 0,     minutes: 5,  isBreak: true  },
+        { level: 6,  sb: 300,   bb: 600,    ante: 600,   minutes: 15, isBreak: false },
+        { level: 7,  sb: 400,   bb: 800,    ante: 800,   minutes: 15, isBreak: false },
+        { level: 8,  sb: 500,   bb: 1000,   ante: 1000,  minutes: 15, isBreak: false },
+        { level: 9,  sb: 600,   bb: 1200,   ante: 1200,  minutes: 15, isBreak: false },
+        { level: 10, sb: 0,     bb: 0,      ante: 0,     minutes: 5,  isBreak: true  },
+        { level: 11, sb: 800,   bb: 1600,   ante: 1600,  minutes: 15, isBreak: false },
+        { level: 12, sb: 1000,  bb: 2000,   ante: 2000,  minutes: 15, isBreak: false },
+        { level: 13, sb: 1200,  bb: 2400,   ante: 2400,  minutes: 15, isBreak: false },
+        { level: 14, sb: 1500,  bb: 3000,   ante: 3000,  minutes: 15, isBreak: false },
+        { level: 15, sb: 0,     bb: 0,      ante: 0,     minutes: 15, isBreak: true  },
+        { level: 16, sb: 2000,  bb: 4000,   ante: 4000,  minutes: 15, isBreak: false },
+        { level: 17, sb: 3000,  bb: 6000,   ante: 6000,  minutes: 15, isBreak: false },
+        { level: 18, sb: 4000,  bb: 8000,   ante: 8000,  minutes: 15, isBreak: false },
+        { level: 19, sb: 5000,  bb: 10000,  ante: 10000, minutes: 15, isBreak: false },
+        { level: 20, sb: 0,     bb: 0,      ante: 0,     minutes: 5,  isBreak: true  },
+        { level: 21, sb: 6000,  bb: 12000,  ante: 12000, minutes: 15, isBreak: false },
+        { level: 22, sb: 8000,  bb: 16000,  ante: 16000, minutes: 15, isBreak: false },
+        { level: 23, sb: 10000, bb: 20000,  ante: 20000, minutes: 15, isBreak: false },
+        { level: 24, sb: 15000, bb: 30000,  ante: 30000, minutes: 15, isBreak: false },
+        { level: 25, sb: 0,     bb: 0,      ante: 0,     minutes: 5,  isBreak: true  },
+        { level: 26, sb: 20000, bb: 40000,  ante: 40000, minutes: 15, isBreak: false },
+        { level: 27, sb: 30000, bb: 60000,  ante: 60000, minutes: 15, isBreak: false },
+        { level: 28, sb: 40000, bb: 80000,  ante: 80000, minutes: 15, isBreak: false },
+        { level: 29, sb: 50000, bb: 100000, ante: 100000,minutes: 15, isBreak: false }
     ];
 
     const mockTournaments = [
@@ -181,13 +183,14 @@ const tg = window.Telegram?.WebApp;
                 const profile = await res.json();
                 myTgId = profile.tgId;
                 termsAgreed = !!profile.termsAgreed;
-                if (profile.firstName || profile.username) {
-                    document.getElementById('userName').textContent = profile.firstName || profile.username;
-                }
+                const topDisplay = profile.nickname || profile.firstName || profile.username || 'Игрок';
+                document.getElementById('userName').textContent = topDisplay;
                 updateAdminUI(profile.isAdmin);
 
                 if (!termsAgreed) {
                     openTermsModal();
+                } else if (!profile.nickname || !profile.nickname.trim()) {
+                    openNicknamePromptModal();
                 }
             }
         } catch (e) {
@@ -211,6 +214,69 @@ const tg = window.Telegram?.WebApp;
         }
     }
 
+    function openNicknamePromptModal() {
+        const modal = document.getElementById('nicknamePromptModal');
+        if (modal) {
+            modal.classList.add('open');
+            modal.classList.add('active');
+        }
+    }
+
+    function closeNicknamePromptModal() {
+        const modal = document.getElementById('nicknamePromptModal');
+        if (modal) {
+            modal.classList.remove('open');
+            modal.classList.remove('active');
+        }
+    }
+
+    async function handleSavePromptNickname() {
+        const input = document.getElementById('promptUserNickname');
+        const nick = input ? input.value.trim() : '';
+        if (!nick) {
+            showToast('Пожалуйста, введите ваш никнейм', 'warning');
+            return;
+        }
+
+        triggerHaptic('medium');
+        const btn = document.getElementById('btnSavePromptNickname');
+        if (btn) btn.disabled = true;
+
+        if (!initData) {
+            document.getElementById('userName').textContent = nick;
+            closeNicknamePromptModal();
+            showToast('Никнейм сохранен (демо)!', 'success');
+            return;
+        }
+
+        try {
+            const res = await fetch('/api/user/nickname', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Init-Data': initData
+                },
+                body: JSON.stringify({ nickname: nick })
+            });
+            if (res.ok) {
+                const profile = await res.json();
+                const topDisplay = profile.nickname || profile.firstName || profile.username || 'Игрок';
+                document.getElementById('userName').textContent = topDisplay;
+                closeNicknamePromptModal();
+                showToast('Никнейм успешно сохранен!', 'success');
+                loadTournaments();
+                loadLeaderboard(currentLeaderboardPeriod);
+            } else {
+                const errText = await res.text();
+                showToast(errText || 'Ошибка сохранения никнейма', 'error');
+                if (btn) btn.disabled = false;
+            }
+        } catch (e) {
+            showToast('Ошибка сети', 'error');
+            if (btn) btn.disabled = false;
+        }
+    }
+
     async function handleConfirmRegistration() {
         const checkbox = document.getElementById('agreeTermsCheckbox');
         if (!checkbox || !checkbox.checked) {
@@ -222,8 +288,14 @@ const tg = window.Telegram?.WebApp;
         const btn = document.getElementById('btnConfirmRegistration');
         if (btn) btn.disabled = true;
 
+        const nickInput = document.getElementById('regUserNickname');
+        const chosenNickname = nickInput ? nickInput.value.trim() : '';
+
         if (!initData) {
             termsAgreed = true;
+            if (chosenNickname) {
+                document.getElementById('userName').textContent = chosenNickname;
+            }
             closeTermsModal();
             showToast('Регистрация успешно пройдена (демо)!', 'success');
             return;
@@ -232,11 +304,17 @@ const tg = window.Telegram?.WebApp;
         try {
             const res = await fetch('/api/user/register', {
                 method: 'POST',
-                headers: { 'X-Init-Data': initData }
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Init-Data': initData
+                },
+                body: JSON.stringify({ nickname: chosenNickname })
             });
             if (res.ok) {
                 const profile = await res.json();
                 termsAgreed = true;
+                const topDisplay = profile.nickname || profile.firstName || profile.username || 'Игрок';
+                document.getElementById('userName').textContent = topDisplay;
                 closeTermsModal();
                 showToast('Добро пожаловать в клуб!', 'success');
                 loadTournaments();
@@ -404,14 +482,14 @@ const tg = window.Telegram?.WebApp;
                     const item = document.createElement('div');
                     const isMe = entry.tgId == myTgId;
                     item.className = `leaderboard-item ${isMe ? 'is-me' : ''}`;
-                    const displayName = entry.firstName || (entry.username ? '@' + entry.username : 'Игрок #' + entry.tgId);
-                    const usernameSub = entry.username ? `@${entry.username}` : `ID: ${entry.tgId}`;
+                    const displayName = entry.nickname || entry.firstName || (entry.username ? '@' + entry.username : 'Игрок #' + entry.tgId);
+                    const subText = entry.nickname ? 'Клубный никнейм' : (entry.username ? `@${entry.username}` : `ID: ${entry.tgId}`);
 
                     item.innerHTML = `
                         <div class="leader-rank">#${entry.rank}</div>
                         <div class="leader-info-block">
                             <span class="leader-name">${escapeHtml(displayName)} ${isMe ? '<span style="color: var(--gold-main); font-size: 10px;">(Вы)</span>' : ''}</span>
-                            <span class="leader-meta">${escapeHtml(usernameSub)} • Турниров: ${entry.tournamentsPlayed} • Побед: ${entry.wins}</span>
+                            <span class="leader-meta">${escapeHtml(subText)} • Турниров: ${entry.tournamentsPlayed} • Побед: ${entry.wins}</span>
                         </div>
                         <div class="leader-score-block">
                             <div class="leader-points">${entry.points}</div>
@@ -427,7 +505,7 @@ const tg = window.Telegram?.WebApp;
     function createPodiumCard(entry, typeClass, medal, placeLabel) {
         const card = document.createElement('div');
         card.className = `podium-card ${typeClass}`;
-        const displayName = entry.firstName || (entry.username ? '@' + entry.username : 'Игрок');
+        const displayName = entry.nickname || entry.firstName || (entry.username ? '@' + entry.username : 'Игрок');
         const detail = entry.wins > 0 ? `${entry.wins} поб.` : `${entry.tournamentsPlayed} турн.`;
         card.innerHTML = `
             <div class="podium-medal">${medal}</div>
@@ -787,12 +865,12 @@ const tg = window.Telegram?.WebApp;
                         ${t.seasonName ? `<span class="card-id-pill" style="border-color: rgba(223, 177, 91, 0.3); color: var(--gold-light);">${escapeHtml(t.seasonName)}</span>` : ''}
                     </div>
                     ${t.finished ? `
-                        <span class="card-status-pill" style="color: #6ee7b7; background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4);">
+                        <span class="card-status-pill" style="color: #fca5a5; background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.4);">
                             Завершен
                         </span>
                     ` : `
-                        <span class="card-status-pill">
-                            <span class="status-dot-pulse"></span>
+                        <span class="card-status-pill" style="color: #6ee7b7; background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4);">
+                            <span class="status-dot-pulse" style="background: #10b981; box-shadow: 0 0 6px #10b981;"></span>
                             Открыт
                         </span>
                     `}
@@ -961,7 +1039,7 @@ const tg = window.Telegram?.WebApp;
                 <div class="admin-tourney-top">
                     <div style="display: flex; align-items: center; gap: 6px;">
                         <span class="card-id-pill">ID #${t.id}</span>
-                        ${t.finished ? `<span class="card-id-pill" style="border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.15); color: #6ee7b7;">Завершен</span>` : ''}
+                        ${t.finished ? `<span class="card-id-pill" style="border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.15); color: #fca5a5;">Завершен</span>` : `<span class="card-id-pill" style="border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.15); color: #6ee7b7;">Открыт</span>`}
                         ${t.seasonName ? `<span class="card-id-pill" style="border-color: rgba(223, 177, 91, 0.3); color: var(--gold-light);">${escapeHtml(t.seasonName)}</span>` : ''}
                     </div>
                     ${isActiveOnTv ? `<span class="card-id-pill" style="border-color: var(--gold-main); background: rgba(223, 177, 91, 0.2);">В эфире на ТВ</span>` : ''}
@@ -1111,8 +1189,8 @@ const tg = window.Telegram?.WebApp;
             const lvl = tvState.currentLevel || 1;
             if (levelNum) levelNum.textContent = lvl;
             const sb = (tvState.smallBlind !== undefined && tvState.smallBlind !== null) ? tvState.smallBlind : 100;
-            const bb = (tvState.bigBlind !== undefined && tvState.bigBlind !== null) ? tvState.bigBlind : 200;
-            const ante = (tvState.ante !== undefined && tvState.ante !== null) ? tvState.ante : 200;
+            const bb = (tvState.bigBlind !== undefined && tvState.bigBlind !== null) ? tvState.bigBlind : 100;
+            const ante = (tvState.ante !== undefined && tvState.ante !== null) ? tvState.ante : 100;
             if (blindsText) {
                 blindsText.textContent = `${sb.toLocaleString('ru-RU')} / ${bb.toLocaleString('ru-RU')} (${ante.toLocaleString('ru-RU')})`;
             }
@@ -1145,7 +1223,7 @@ const tg = window.Telegram?.WebApp;
             } else if (action === 'NEXT_LEVEL') {
                 tvState.currentLevel = (tvState.currentLevel || 1) + 1;
                 const b = BLINDS_TABLE[(tvState.currentLevel || 1) - 1] || BLINDS_TABLE[0];
-                const mins = b && b.minutes ? b.minutes : 20;
+                const mins = b && b.minutes ? b.minutes : 15;
                 tvState.secondsLeft = mins * 60;
                 tvState.break = !!(b && b.isBreak);
                 tvState.isBreak = !!(b && b.isBreak);
@@ -1159,7 +1237,7 @@ const tg = window.Telegram?.WebApp;
                     tvState.currentLevel--;
                 }
                 const b = BLINDS_TABLE[(tvState.currentLevel || 1) - 1] || BLINDS_TABLE[0];
-                const mins = b && b.minutes ? b.minutes : 20;
+                const mins = b && b.minutes ? b.minutes : 15;
                 tvState.secondsLeft = mins * 60;
                 tvState.break = !!(b && b.isBreak);
                 tvState.isBreak = !!(b && b.isBreak);
@@ -1172,12 +1250,12 @@ const tg = window.Telegram?.WebApp;
                 const nextBreak = !(tvState.break ?? tvState.isBreak);
                 tvState.break = nextBreak;
                 tvState.isBreak = nextBreak;
-                tvState.secondsLeft = nextBreak ? 15 * 60 : 20 * 60;
+                tvState.secondsLeft = nextBreak ? 5 * 60 : 15 * 60;
             } else if (action === 'ADJUST_TIME') {
                 const delta = extra.deltaSeconds || 0;
                 tvState.secondsLeft = Math.max(0, tvState.secondsLeft + delta);
             } else if (action === 'SYNC') {
-                tvState.secondsLeft = extra.secondsLeft !== undefined ? extra.secondsLeft : 20 * 60;
+                tvState.secondsLeft = extra.secondsLeft !== undefined ? extra.secondsLeft : 15 * 60;
             } else if (action === 'SET_BLINDS') {
                 tvState.bigBlind = extra.bigBlind;
                 tvState.smallBlind = extra.smallBlind;
@@ -1214,12 +1292,13 @@ const tg = window.Telegram?.WebApp;
                     running: isRunning,
                     isRunning: isRunning,
                     currentLevel: s.currentLevel || 1,
-                    secondsLeft: s.secondsLeft !== undefined ? s.secondsLeft : 20 * 60,
+                    secondsLeft: s.secondsLeft !== undefined ? s.secondsLeft : 15 * 60,
                     break: isBreak,
                     isBreak: isBreak,
                     smallBlind: s.smallBlind,
                     bigBlind: s.bigBlind,
-                    ante: s.ante
+                    ante: s.ante,
+                    customStructure: s.customStructure
                 };
                 updateTvRemoteUI();
                 renderAdminTournaments();
@@ -1361,14 +1440,14 @@ const tg = window.Telegram?.WebApp;
                 list.forEach((p, idx) => {
                     const row = document.createElement('div');
                     row.className = 'participant-item';
-                    const name = [p.firstName, p.lastName].filter(Boolean).join(' ') || 'Игрок #' + (idx + 1);
-                    const username = p.username ? `@${p.username}` : `TG: ${p.tgId}`;
+                    const name = p.nickname || [p.firstName, p.lastName].filter(Boolean).join(' ') || 'Игрок #' + (idx + 1);
+                    const subInfo = p.nickname ? 'Клубный участник' : (p.username ? `@${p.username}` : `TG: ${p.tgId}`);
                     const dateStr = p.registeredAt ? new Date(p.registeredAt).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '';
 
                     row.innerHTML = `
                         <div class="participant-info">
                             <span class="participant-name">${escapeHtml(name)}</span>
-                            <span class="participant-user">${escapeHtml(username)}</span>
+                            <span class="participant-user">${escapeHtml(subInfo)}</span>
                         </div>
                         <span class="participant-date">${escapeHtml(dateStr)}</span>
                     `;
@@ -1627,6 +1706,205 @@ const tg = window.Telegram?.WebApp;
             .replace(/'/g, '&#039;');
     }
 
+    function openCustomBlindsModal() {
+        const modal = document.getElementById('customBlindsModal');
+        if (modal) {
+            modal.classList.add('open');
+            modal.classList.add('active');
+        }
+    }
+
+    function closeCustomBlindsModal() {
+        const modal = document.getElementById('customBlindsModal');
+        if (modal) {
+            modal.classList.remove('open');
+            modal.classList.remove('active');
+        }
+    }
+
+    function closeCustomBlindsModalOnBackdrop(e) {
+        if (e.target && e.target.id === 'customBlindsModal') {
+            closeCustomBlindsModal();
+        }
+    }
+
+    function parseBlindsRows(rows) {
+        if (!Array.isArray(rows) || rows.length === 0) return [];
+        let startRow = 0;
+        const r0 = rows[0] || [];
+        const r0Str = r0.map(c => String(c || '').toLowerCase()).join(' ');
+        if (r0Str.includes('этап') || r0Str.includes('уров') || r0Str.includes('малый') || r0Str.includes('sb') || r0Str.includes('bb') || r0Str.includes('блайнд') || r0Str.includes('ante') || r0Str.includes('level')) {
+            startRow = 1;
+        }
+
+        let stageCol = 0;
+        let sbCol = 1;
+        let bbCol = 2;
+        let anteCol = 3;
+        let timeCol = 4;
+
+        if (startRow === 1) {
+            r0.forEach((val, idx) => {
+                const s = String(val || '').toLowerCase().trim();
+                if (s.includes('этап') || s.includes('уров') || s.includes('level') || s.includes('номер') || s.includes('раунд')) {
+                    stageCol = idx;
+                } else if (s.includes('мал') || s.includes('small') || s.includes('sb') || s.includes('мб')) {
+                    sbCol = idx;
+                } else if (s.includes('бол') || s.includes('big') || s.includes('bb') || s.includes('бб')) {
+                    bbCol = idx;
+                } else if (s.includes('ante') || s.includes('анте') || s.includes('bba')) {
+                    anteCol = idx;
+                } else if (s.includes('врем') || s.includes('длит') || s.includes('time') || s.includes('мин') || s.includes('duration')) {
+                    timeCol = idx;
+                }
+            });
+        }
+
+        const parseMinutes = (timeVal, defaultMin) => {
+            if (timeVal === undefined || timeVal === null) return defaultMin;
+            if (typeof timeVal === 'number') {
+                if (timeVal > 0 && timeVal < 1) {
+                    return Math.max(1, Math.round(timeVal * 24 * 60));
+                }
+                return timeVal > 0 ? Math.round(timeVal) : defaultMin;
+            }
+            const s = String(timeVal).trim();
+            if (!s) return defaultMin;
+            if (s.includes(':')) {
+                const parts = s.split(':').map(p => parseInt(p.trim(), 10) || 0);
+                if (parts.length >= 2) {
+                    const mins = parts[0] + Math.round(parts[1] / 60);
+                    return mins > 0 ? mins : defaultMin;
+                }
+            }
+            const clean = parseInt(s.replace(/[^\d]/g, ''), 10);
+            return (!isNaN(clean) && clean > 0) ? clean : defaultMin;
+        };
+
+        const structure = [];
+        let currentSeq = 1;
+        for (let i = startRow; i < rows.length; i++) {
+            const row = rows[i];
+            if (!row || row.length === 0) continue;
+
+            const stageVal = String(row[stageCol] !== undefined ? row[stageCol] : '').trim().toLowerCase();
+            const sbValStr = String(row[sbCol] !== undefined ? row[sbCol] : '').trim();
+            const bbValStr = String(row[bbCol] !== undefined ? row[bbCol] : '').trim();
+            const anteValStr = String(row[anteCol] !== undefined ? row[anteCol] : '').trim();
+            const timeVal = row[timeCol] !== undefined ? row[timeCol] : null;
+
+            const isBreak = stageVal.includes('перерыв') || stageVal.includes('break') ||
+                            sbValStr === '-' || sbValStr === '—' || bbValStr === '-' || bbValStr === '—';
+
+            const cleanNum = (str) => {
+                const n = parseInt(String(str || '').replace(/[^\d]/g, ''), 10);
+                return isNaN(n) ? 0 : n;
+            };
+
+            const sb = cleanNum(sbValStr);
+            const bb = cleanNum(bbValStr);
+            const ante = cleanNum(anteValStr);
+
+            if (!isBreak && bb <= 0 && sb <= 0) continue;
+
+            const defaultMin = isBreak ? 5 : 15;
+            const minutes = parseMinutes(timeVal, defaultMin);
+            structure.push({
+                level: currentSeq++,
+                sb: isBreak ? 0 : sb,
+                bb: isBreak ? 0 : bb,
+                ante: isBreak ? 0 : (ante > 0 ? ante : bb),
+                minutes: minutes,
+                isBreak: isBreak
+            });
+        }
+        return structure;
+    }
+
+    async function handleApplyBlindsFromFile() {
+        const fileInput = document.getElementById('blindsStructureFileInput');
+        if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+            showToast('Выберите файл Excel со структурой уровней', 'warning');
+            return;
+        }
+        if (typeof XLSX === 'undefined') {
+            showToast('Библиотека XLSX недоступна', 'error');
+            return;
+        }
+
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            try {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                const structure = parseBlindsRows(rows);
+
+                if (structure.length === 0) {
+                    showToast('В файле не найдено строк уровней', 'error');
+                    return;
+                }
+
+                await sendTvAction('SET_STRUCTURE', { structure });
+                closeCustomBlindsModal();
+                showToast(`Сетка применена: ${structure.length} уровней!`, 'success');
+            } catch (err) {
+                showToast('Ошибка разбора Excel: ' + err.message, 'error');
+            }
+        };
+        reader.readAsArrayBuffer(file);
+    }
+
+    async function handleApplyBlindsFromUrl() {
+        const urlInput = document.getElementById('blindsGoogleSheetUrlInput');
+        if (!urlInput || !urlInput.value || !urlInput.value.trim()) {
+            showToast('Введите ссылку на Google Таблицу', 'warning');
+            return;
+        }
+        let url = urlInput.value.trim();
+        if (url.includes('docs.google.com/spreadsheets')) {
+            const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
+            if (match && match[1]) {
+                url = `https://docs.google.com/spreadsheets/d/${match[1]}/export?format=xlsx`;
+            }
+        }
+
+        const proxyUrl = `/api/public/proxy-excel?url=${encodeURIComponent(url)}`;
+        try {
+            showToast('Загрузка таблицы по ссылке...');
+            const res = await fetch(proxyUrl);
+            if (!res.ok) {
+                throw new Error('Сервер не смог скачать таблицу по ссылке');
+            }
+            const arrayBuffer = await res.arrayBuffer();
+            const workbook = XLSX.read(new Uint8Array(arrayBuffer), { type: 'array' });
+            const firstSheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[firstSheetName];
+            const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+            const structure = parseBlindsRows(rows);
+
+            if (structure.length === 0) {
+                showToast('В таблице не найдено строк уровней', 'error');
+                return;
+            }
+
+            await sendTvAction('SET_STRUCTURE', { structure });
+            closeCustomBlindsModal();
+            showToast(`Сетка блайндов загружена: ${structure.length} уровней!`, 'success');
+        } catch (err) {
+            showToast('Ошибка загрузки сетки: ' + err.message, 'error');
+        }
+    }
+
+    async function handleResetBlindsStructure() {
+        await sendTvAction('RESET_STRUCTURE');
+        closeCustomBlindsModal();
+        showToast('Сетка сброшена к стандартной (15 мин)', 'info');
+    }
+
     function toggleMockSource() {
         allTournaments = sortTournaments(mockTournaments);
         renderTournaments(allTournaments);
@@ -1681,7 +1959,7 @@ const tg = window.Telegram?.WebApp;
         bind('btnTvRemoteBreak', 'click', () => tvRemoteAction('TOGGLE_BREAK'));
         bind('btnTvRemotePlus1m', 'click', () => tvRemoteAction('ADJUST_TIME', { deltaSeconds: 60 }));
         bind('btnTvRemoteMinus1m', 'click', () => tvRemoteAction('ADJUST_TIME', { deltaSeconds: -60 }));
-        bind('btnTvRemoteSync15m', 'click', () => tvRemoteAction('SYNC', { secondsLeft: 20 * 60 }));
+        bind('btnTvRemoteSync15m', 'click', () => tvRemoteAction('SYNC', { secondsLeft: 15 * 60 }));
         bind('btnOpenCreateTourney', 'click', openCreateModal);
         bind('tournamentModal', 'click', closeModalOnBackdrop);
         bind('btnCloseTournamentModal', 'click', closeTournamentModal);
@@ -1698,6 +1976,37 @@ const tg = window.Telegram?.WebApp;
         bind('btnResultsFromUrl', 'click', submitResultsFromUrl);
         bind('btnResultsUploadFile', 'click', submitResultsFile);
 
+        const blindsFileInput = document.getElementById('blindsStructureFileInput');
+        const blindsFileNameLabel = document.getElementById('blindsFileNameLabel');
+        bind('btnPickBlindsFile', 'click', () => {
+            if (blindsFileInput) blindsFileInput.click();
+        });
+        if (blindsFileInput) {
+            blindsFileInput.addEventListener('change', () => {
+                const name = blindsFileInput.files && blindsFileInput.files[0] ? blindsFileInput.files[0].name : 'Файл не выбран';
+                if (blindsFileNameLabel) blindsFileNameLabel.textContent = name;
+            });
+        }
+
+        const resultsFileInput = document.getElementById('resultsFileInput');
+        const resultsFileNameLabel = document.getElementById('resultsFileNameLabel');
+        bind('btnPickResultsFile', 'click', () => {
+            if (resultsFileInput) resultsFileInput.click();
+        });
+        if (resultsFileInput) {
+            resultsFileInput.addEventListener('change', () => {
+                const name = resultsFileInput.files && resultsFileInput.files[0] ? resultsFileInput.files[0].name : 'Файл не выбран';
+                if (resultsFileNameLabel) resultsFileNameLabel.textContent = name;
+            });
+        }
+
+        bind('btnOpenCustomBlindsModal', 'click', openCustomBlindsModal);
+        bind('btnCloseCustomBlindsModal', 'click', closeCustomBlindsModal);
+        bind('customBlindsModal', 'click', closeCustomBlindsModalOnBackdrop);
+        bind('btnApplyBlindsFile', 'click', handleApplyBlindsFromFile);
+        bind('btnApplyBlindsUrl', 'click', handleApplyBlindsFromUrl);
+        bind('btnResetBlindsStructure', 'click', handleResetBlindsStructure);
+
         const termsCb = document.getElementById('agreeTermsCheckbox');
         if (termsCb) {
             termsCb.addEventListener('change', () => {
@@ -1706,6 +2015,16 @@ const tg = window.Telegram?.WebApp;
             });
         }
         bind('btnConfirmRegistration', 'click', handleConfirmRegistration);
+        bind('btnSavePromptNickname', 'click', handleSavePromptNickname);
+        const promptInput = document.getElementById('promptUserNickname');
+        if (promptInput) {
+            promptInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleSavePromptNickname();
+                }
+            });
+        }
     }
 
     initEventListeners();

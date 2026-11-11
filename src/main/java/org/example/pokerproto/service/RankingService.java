@@ -191,7 +191,8 @@ public class RankingService {
                     totalPoints,
                     played,
                     wins,
-                    bestPlace
+                    bestPlace,
+                    u.getNickname()
             ));
         }
 
@@ -215,7 +216,8 @@ public class RankingService {
                     e.points(),
                     e.tournamentsPlayed(),
                     e.wins(),
-                    e.bestPlace()
+                    e.bestPlace(),
+                    e.nickname()
             ));
         }
 

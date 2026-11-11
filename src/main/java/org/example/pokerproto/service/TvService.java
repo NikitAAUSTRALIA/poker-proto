@@ -17,33 +17,35 @@ public class TvService {
     public record BlindLevel(int level, int sb, int bb, int ante, int minutes, boolean isBreak) {}
 
     public static final List<BlindLevel> DEFAULT_STRUCTURE = List.of(
-            new BlindLevel(1, 100, 200, 200, 20, false),
-            new BlindLevel(2, 200, 400, 400, 20, false),
-            new BlindLevel(3, 300, 600, 600, 20, false),
-            new BlindLevel(4, 400, 800, 800, 20, false),
-            new BlindLevel(5, 500, 1000, 1000, 20, false),
-            new BlindLevel(6, 0, 0, 0, 15, true),
-            new BlindLevel(7, 600, 1200, 1200, 20, false),
-            new BlindLevel(8, 800, 1600, 1600, 20, false),
-            new BlindLevel(9, 1000, 2000, 2000, 20, false),
-            new BlindLevel(10, 1200, 2400, 2400, 20, false),
-            new BlindLevel(11, 1500, 3000, 3000, 20, false),
-            new BlindLevel(12, 0, 0, 0, 15, true),
-            new BlindLevel(13, 2000, 4000, 4000, 20, false),
-            new BlindLevel(14, 2500, 5000, 5000, 20, false),
-            new BlindLevel(15, 3000, 6000, 6000, 20, false),
-            new BlindLevel(16, 4000, 8000, 8000, 20, false),
-            new BlindLevel(17, 5000, 10000, 10000, 20, false),
-            new BlindLevel(18, 0, 0, 0, 15, true),
-            new BlindLevel(19, 6000, 12000, 12000, 20, false),
-            new BlindLevel(20, 8000, 16000, 16000, 20, false),
-            new BlindLevel(21, 10000, 20000, 20000, 20, false),
-            new BlindLevel(22, 15000, 30000, 30000, 20, false),
-            new BlindLevel(23, 20000, 40000, 40000, 20, false),
-            new BlindLevel(24, 25000, 50000, 50000, 20, false),
-            new BlindLevel(25, 30000, 60000, 60000, 20, false),
-            new BlindLevel(26, 40000, 80000, 80000, 20, false),
-            new BlindLevel(27, 50000, 100000, 100000, 20, false)
+            new BlindLevel(1, 100, 100, 100, 15, false),
+            new BlindLevel(2, 100, 200, 200, 15, false),
+            new BlindLevel(3, 150, 300, 300, 15, false),
+            new BlindLevel(4, 200, 400, 400, 15, false),
+            new BlindLevel(5, 0, 0, 0, 5, true),
+            new BlindLevel(6, 300, 600, 600, 15, false),
+            new BlindLevel(7, 400, 800, 800, 15, false),
+            new BlindLevel(8, 500, 1000, 1000, 15, false),
+            new BlindLevel(9, 600, 1200, 1200, 15, false),
+            new BlindLevel(10, 0, 0, 0, 5, true),
+            new BlindLevel(11, 800, 1600, 1600, 15, false),
+            new BlindLevel(12, 1000, 2000, 2000, 15, false),
+            new BlindLevel(13, 1200, 2400, 2400, 15, false),
+            new BlindLevel(14, 1500, 3000, 3000, 15, false),
+            new BlindLevel(15, 0, 0, 0, 15, true),
+            new BlindLevel(16, 2000, 4000, 4000, 15, false),
+            new BlindLevel(17, 3000, 6000, 6000, 15, false),
+            new BlindLevel(18, 4000, 8000, 8000, 15, false),
+            new BlindLevel(19, 5000, 10000, 10000, 15, false),
+            new BlindLevel(20, 0, 0, 0, 5, true),
+            new BlindLevel(21, 6000, 12000, 12000, 15, false),
+            new BlindLevel(22, 8000, 16000, 16000, 15, false),
+            new BlindLevel(23, 10000, 20000, 20000, 15, false),
+            new BlindLevel(24, 15000, 30000, 30000, 15, false),
+            new BlindLevel(25, 0, 0, 0, 5, true),
+            new BlindLevel(26, 20000, 40000, 40000, 15, false),
+            new BlindLevel(27, 30000, 60000, 60000, 15, false),
+            new BlindLevel(28, 40000, 80000, 80000, 15, false),
+            new BlindLevel(29, 50000, 100000, 100000, 15, false)
     );
 
     @Data
@@ -53,20 +55,28 @@ public class TvService {
         private String excelUrl = "";
         private boolean isRunning = false;
         private int currentLevel = 1;
-        private int secondsLeft = 20 * 60;
-        private int totalSeconds = 20 * 60;
+        private int secondsLeft = 15 * 60;
+        private int totalSeconds = 15 * 60;
         private boolean isBreak = false;
         private long lastSyncTimestamp = System.currentTimeMillis();
         private Integer smallBlind = 100;
-        private Integer bigBlind = 200;
-        private Integer ante = 200;
+        private Integer bigBlind = 100;
+        private Integer ante = 100;
+        private List<BlindLevel> customStructure;
     }
 
     private final TvState currentState = new TvState();
 
+    private List<BlindLevel> activeStructure() {
+        return (currentState.getCustomStructure() != null && !currentState.getCustomStructure().isEmpty())
+                ? currentState.getCustomStructure()
+                : DEFAULT_STRUCTURE;
+    }
+
     private void applyLevel(int levelNum) {
-        int idx = Math.max(0, Math.min(levelNum - 1, DEFAULT_STRUCTURE.size() - 1));
-        BlindLevel bl = DEFAULT_STRUCTURE.get(idx);
+        List<BlindLevel> structure = activeStructure();
+        int idx = Math.max(0, Math.min(levelNum - 1, structure.size() - 1));
+        BlindLevel bl = structure.get(idx);
         currentState.setCurrentLevel(levelNum);
         currentState.setBreak(bl.isBreak());
         if (!bl.isBreak()) {
@@ -79,6 +89,22 @@ public class TvService {
         currentState.setTotalSeconds(secs);
     }
 
+    public synchronized TvState setCustomStructure(List<BlindLevel> structure) {
+        if (structure != null && !structure.isEmpty()) {
+            currentState.setCustomStructure(new java.util.ArrayList<>(structure));
+            applyLevel(currentState.getCurrentLevel());
+            currentState.setLastSyncTimestamp(System.currentTimeMillis());
+        }
+        return copyState();
+    }
+
+    public synchronized TvState resetCustomStructure() {
+        currentState.setCustomStructure(null);
+        applyLevel(currentState.getCurrentLevel());
+        currentState.setLastSyncTimestamp(System.currentTimeMillis());
+        return copyState();
+    }
+
     public synchronized TvState getState() {
         if (currentState.isRunning()) {
             long now = System.currentTimeMillis();
@@ -88,7 +114,7 @@ public class TvService {
                 currentState.setSecondsLeft(newSeconds);
                 currentState.setLastSyncTimestamp(now);
                 if (newSeconds == 0) {
-                    if (currentState.getCurrentLevel() < DEFAULT_STRUCTURE.size()) {
+                    if (currentState.getCurrentLevel() < activeStructure().size()) {
                         nextLevel(0);
                     } else {
                         currentState.setRunning(false);
@@ -129,7 +155,7 @@ public class TvService {
     }
 
     public synchronized TvState nextLevel(int seconds) {
-        if (currentState.getCurrentLevel() < DEFAULT_STRUCTURE.size()) {
+        if (currentState.getCurrentLevel() < activeStructure().size()) {
             applyLevel(currentState.getCurrentLevel() + 1);
             if (seconds > 0) {
                 currentState.setSecondsLeft(seconds);
@@ -155,14 +181,18 @@ public class TvService {
     public synchronized TvState toggleBreak(int seconds) {
         boolean nextBreak = !currentState.isBreak();
         currentState.setBreak(nextBreak);
-        if (nextBreak) {
-            int breakSecs = seconds > 0 ? seconds : 15 * 60;
-            currentState.setSecondsLeft(breakSecs);
-            currentState.setTotalSeconds(breakSecs);
+        if (seconds > 0) {
+            currentState.setSecondsLeft(seconds);
+            currentState.setTotalSeconds(seconds);
         } else {
-            int lvlSecs = seconds > 0 ? seconds : 20 * 60;
-            currentState.setSecondsLeft(lvlSecs);
-            currentState.setTotalSeconds(lvlSecs);
+            List<BlindLevel> structure = activeStructure();
+            int idx = Math.max(0, Math.min(currentState.getCurrentLevel() - 1, structure.size() - 1));
+            BlindLevel bl = structure.get(idx);
+            int breakSecs = (bl.isBreak() && bl.minutes() > 0) ? bl.minutes() * 60 : 5 * 60;
+            int lvlSecs = (!bl.isBreak() && bl.minutes() > 0) ? bl.minutes() * 60 : 15 * 60;
+            int targetSecs = nextBreak ? breakSecs : lvlSecs;
+            currentState.setSecondsLeft(targetSecs);
+            currentState.setTotalSeconds(targetSecs);
         }
         currentState.setLastSyncTimestamp(System.currentTimeMillis());
         return copyState();
@@ -213,6 +243,7 @@ public class TvService {
         copy.setSmallBlind(currentState.getSmallBlind());
         copy.setBigBlind(currentState.getBigBlind());
         copy.setAnte(currentState.getAnte());
+        copy.setCustomStructure(currentState.getCustomStructure());
         return copy;
     }
 }

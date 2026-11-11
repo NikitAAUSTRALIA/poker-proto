@@ -53,14 +53,32 @@ public class UserService {
 
     @Transactional
     public User agreeTerms(Long tgId) {
+        return agreeTerms(tgId, null);
+    }
+
+    @Transactional
+    public User agreeTerms(Long tgId, String nickname) {
         User user = repo.findByTgId(tgId).orElseGet(User::new);
         user.setTgId(tgId);
         user.setTermsAgreed(true);
         user.setTermsAgreedAt(java.time.Instant.now());
+        if (nickname != null && !nickname.isBlank()) {
+            user.setNickname(nickname.trim());
+        }
         if (adminIds.contains(tgId)) {
             user.setRole(Role.ADMIN);
         } else if (user.getRole() == null) {
             user.setRole(Role.USER);
+        }
+        return repo.save(user);
+    }
+
+    @Transactional
+    public User updateNickname(Long tgId, String nickname) {
+        User user = repo.findByTgId(tgId)
+                .orElseThrow(() -> new IllegalStateException("User not found: " + tgId));
+        if (nickname != null && !nickname.isBlank()) {
+            user.setNickname(nickname.trim());
         }
         return repo.save(user);
     }

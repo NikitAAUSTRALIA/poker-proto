@@ -52,7 +52,9 @@ public class LeaderboardCommand implements Command {
             else if (i == 2) medal = "🥉";
             else medal = (i + 1) + ".";
 
-            String name = e.firstName() != null ? e.firstName() : (e.username() != null ? "@" + e.username() : "Игрок #" + e.tgId());
+            String name = (e.nickname() != null && !e.nickname().isBlank())
+                    ? e.nickname()
+                    : (e.firstName() != null ? e.firstName() : (e.username() != null ? "@" + e.username() : "Игрок #" + e.tgId()));
             sb.append(medal).append(" ").append(name)
                     .append(" — ").append(e.points()).append(" очк.")
                     .append(" (турниров: ").append(e.tournamentsPlayed()).append(")\n");
